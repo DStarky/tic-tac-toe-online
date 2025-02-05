@@ -18,6 +18,7 @@ model Game {
   status     GameStatus
   players    User[]     @relation("games")
   winner     User?      @relation(fields: [winnerId], references: [id])
+  field      Json?
   winnerId   String?
   gameOverAt String?
 }
