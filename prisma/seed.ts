@@ -13,7 +13,7 @@ async function main() {
     data: {
       login: "user2",
       passwordHash: "adasdasdasdmin",
-      rating: 1000,
+      rating: 800,
     },
   });
 
