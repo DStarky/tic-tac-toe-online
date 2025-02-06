@@ -3,13 +3,13 @@ const prisma = new PrismaClient();
 async function main() {
   await prisma.game.create({
     data: {
-      name: "test-game-1",
+      status: "idle",
     },
   });
 
   await prisma.game.create({
     data: {
-      name: "test-game-2",
+      status: "idle",
     },
   });
 }
