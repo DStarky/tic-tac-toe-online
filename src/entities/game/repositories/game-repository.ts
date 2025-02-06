@@ -1,14 +1,11 @@
 import { prisma } from "@/shared/lib/db";
-import { Game, User } from "@prisma/client";
+import { Game, Prisma, User } from "@prisma/client";
 import { z } from "zod";
-import {
-  GameEntity,
-  GameIdleEntity,
-  GameOverEntity
-} from "../domain";
+import { GameEntity, GameIdleEntity, GameOverEntity } from "../domain";
 
-async function gamesList(): Promise<GameEntity[]> {
+async function gamesList(where?: Prisma.GameWhereInput): Promise<GameEntity[]> {
   const games = await prisma.game.findMany({
+    where,
     include: {
       players: true,
       winner: true,
@@ -24,13 +21,16 @@ function dbGameToGameEntity(
   game: Game & { players: User[]; winner?: User | null },
 ): GameEntity {
   switch (game.status) {
-    case "idle":
+    case "idle": {
+      const [creator] = game.players;
+      if (!creator) throw new Error("Game idle without creator");
+      
       return {
         id: game.id,
-        players: game.players,
+        creator: creator,
         status: game.status,
       } satisfies GameIdleEntity;
-
+    }
     case "gameOver":
       if (!game.winner) throw new Error("Game over without winner");
       return {
